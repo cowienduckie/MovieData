@@ -1,6 +1,6 @@
 # visualization_movie_data
 
-# Installation
+## Installation
 
 ```cmd
 pip install pandas
