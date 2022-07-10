@@ -1,0 +1,13 @@
+﻿@model FilmWrapper
+
+@{
+    ViewBag.Title = "Map";
+    Layout = "_Layout";
+}
+
+<h2>Title</h2>
+
+@foreach (var data in Model.Data.Region)
+{
+    <p>@data.Title</p>
+}

@@ -1,0 +1,13 @@
+﻿@model MapWrapper
+
+@{
+    ViewBag.Title = "Map";
+    Layout = "_Layout";
+}
+
+<h2>Title</h2>
+
+@foreach (var mapData in Model.Data)
+{
+    <p>@mapData.Name</p><br/>
+}
