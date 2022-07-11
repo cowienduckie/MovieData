@@ -5,9 +5,58 @@
     Layout = "_Layout";
 }
 
-<h2>Title</h2>
+<div class="row">
+    <div class="col-3 text-center">
+        <p>Total movies</p>
+        <h4>1000</h4>
+    </div>
+    <div class="col-3 text-center">
+        <p>Total votes</p>
+        <h4>20000</h4>
+    </div>
+    <div class="col-3 text-center">
+        <p>Vote average</p>
+        <h4>6.6</h4>
+    </div>
+    <div class="col-3 text-center align-middle">
+        <h3>
+            Viet Nam
+        </h3>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-5">
+        <h5 class="text-center">Ranking</h5>
+        <table class="table table-hover table-bordered table">
+            <thead>
+            <tr>
+                <th scope="col" style="text-align: center">Top</th>
+                <th scope="col" style="text-align: center">Name</th>
+                <th scope="col" style="text-align: center">Popularity</th>
+                <th scope="col" style="text-align: center">Budget</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Data.Region.Count; i++)
+                {
+                    var film = Model.Data.Region[i];
+                    <tr>
+                        <th scope="row" class="align-middle" style="text-align: center">@(i+1)</th>
+                        <td class="align-middle">@film.Title</td>
+                        <td class="align-middle" align="center">@film.Popularity</td>
+                        <td class="align-middle" align="center">@film.Budget</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-7"></div>
+</div>
 
-@foreach (var data in Model.Data.Region)
-{
-    <p>@data.Title</p>
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+
+    </script>
 }
