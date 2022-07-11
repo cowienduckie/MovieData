@@ -4,6 +4,7 @@
 
 ```cmd
 pip install pandas
+pip install py
 pip install fastapi
 pip install uvicorn
 ```
