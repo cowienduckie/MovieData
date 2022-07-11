@@ -62,7 +62,7 @@ def data_map():
             
             for i in range(0, len(row_fi),2):
                 # print(len(row_fi[i][0]))
-                if  'code' in row_fi[i][0][1:-1]:
+                if  'iso_3166_1' in row_fi[i][0][1:-1]:
                     row_code = row_fi[i][1].replace(' ', '')[1:-1]
                     if row_code not in code:
                         code.append(row_code)

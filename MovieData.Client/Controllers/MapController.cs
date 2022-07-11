@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using MovieData.Client.Repositories;
 
 namespace MovieData.Client.Controllers
@@ -25,7 +26,9 @@ namespace MovieData.Client.Controllers
         [Route("Map/Detail/{countryCode}")]
         public IActionResult Detail(string countryCode)
         {
-            var model = _movieRepo.GetFilm(countryCode);
+            countryCode = countryCode.ToUpper();
+
+            var model = _movieRepo.GetDetailModel(countryCode);
 
             return View(model);
         }

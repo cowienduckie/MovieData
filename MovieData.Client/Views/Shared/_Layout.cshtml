@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    var actionName = ViewContext.RouteData.Values["action"].ToString();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,13 +34,20 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid pl-5 pr-5">
+    @*<div class="@(controllerName == "Map" && actionName == "Index" ? "container-fluid pl-5 pr-5" : "container-fluid")"
+         style="@(controllerName == "Map" && actionName == "Index" ? "" : "padding-left:15vw; padding-right:15vw;")">
         <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>*@
+
+    <div class="container-fluid px-5">
+        <main role="main" class="pb-3 mx-5">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+<footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2022 - MovieData.Client - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

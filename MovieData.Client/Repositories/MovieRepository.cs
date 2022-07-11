@@ -1,4 +1,5 @@
-﻿using MovieData.Client.Configs;
+﻿using System.Linq;
+using MovieData.Client.Configs;
 using MovieData.Client.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,6 +15,7 @@ namespace MovieData.Client.Repositories
         PieChartWrapper GetPieChart(string countryCode);
         HistogramChartWrapper GetHistogramChart(string countryCode);
         PyramidChartWrapper GetPyramidChart(string countryCode);
+        DetailModel GetDetailModel(string countryCode);
     }
 
     public class MovieRepository : IMovieRepository
@@ -112,6 +114,19 @@ namespace MovieData.Client.Repositories
             }
 
             return null;
+        }
+
+        public DetailModel GetDetailModel(string countryCode)
+        {
+            return new DetailModel
+            {
+                CountryInfo = GetMap().Data.FirstOrDefault(d => d.Code == countryCode),
+                FilmData = GetFilm(countryCode).Data.Region,
+                HistogramChartData = GetHistogramChart(countryCode).Data,
+                LineChartData = GetLineChart(countryCode).Data,
+                PieChartData = GetPieChart(countryCode).Data,
+                PyramidChartData = GetPyramidChart(countryCode)
+            };
         }
     }
 }
