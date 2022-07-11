@@ -1,4 +1,4 @@
-# visualization_movie_data
+# Movie Data Server
 
 ## Installation
 
