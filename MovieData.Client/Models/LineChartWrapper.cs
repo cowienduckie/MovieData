@@ -4,7 +4,7 @@ namespace MovieData.Client.Models
 {
     public class LineChartWrapper
     {
-        public List<LineChartContainer> Data;
+        public LineChartContainer Data;
     }
 
     public class LineChartContainer

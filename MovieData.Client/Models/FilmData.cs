@@ -11,7 +11,7 @@ namespace MovieData.Client.Models
         public string Overview { get; set; }
         public decimal Popularity { get; set; }
         public decimal VoteAverage { get; set; }
-        public DateTime Date { get; set; }
-        public List<Country> Country { get; set; }
+        public string Date { get; set; }
+        public string Country { get; set; }
     }
 }

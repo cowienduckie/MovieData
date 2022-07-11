@@ -2,7 +2,7 @@
 {
     public class HistogramChartData
     {
-        public decimal RunTime { get; set; }
+        public decimal? RunTime { get; set; }
         public int MovieCount { get; set; }
     }
 }
