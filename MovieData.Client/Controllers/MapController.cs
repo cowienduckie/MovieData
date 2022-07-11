@@ -12,6 +12,8 @@ namespace MovieData.Client.Controllers
             _movieRepo = movieRepo;
         }
 
+        [HttpGet]
+        [Route("Map")]
         public IActionResult Index()
         {
             var model = _movieRepo.GetMap();
@@ -19,6 +21,8 @@ namespace MovieData.Client.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Route("Map/Detail/{countryCode}")]
         public IActionResult Detail(string countryCode)
         {
             var model = _movieRepo.GetFilm(countryCode);
