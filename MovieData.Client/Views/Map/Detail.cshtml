@@ -146,8 +146,24 @@
                 dataLabels: {
                     enabled: false
                 },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return value;
+                        }
+                    },
+                },
+                xaxis: {
+                    categories: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime))),
+                    labels: {
+                        formatter: function (value) {
+                            return value > 1 ? value + ' minutes' : value + ' minute';
+                        }
+                    }
+                },
                 stroke: {
-                    curve: 'straight'
+                    curve: 'smooth',
+                    width: 1,
                 },
                 title: {
                     text: 'Popularity by Length',
@@ -159,9 +175,6 @@
                         opacity: 0.5
                     },
                 },
-                xaxis: {
-                    categories: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime)))
-                }
             });
         lineChart.render();
 
@@ -170,48 +183,60 @@
                 series: [{
                     name: "@Model.CountryInfo.Name",
                     data:  @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.MovieCount)))
-                }],
+                    }
+                ],
                 chart: {
-                    type: 'histogram',
+                    type: 'bar',
                     zoom: {
                         enabled: true
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: '100%',
                     }
                 },
                 dataLabels: {
                     enabled: false
                 },
-                stroke: {
-                    curve: 'straight'
-                },
                 title: {
                     text: 'Movie count by Length',
                     align: 'center'
                 },
-                grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'],
-                        opacity: 0.5
+                yaxis: {
+                    labels: {
+                        formatter: function(value) {
+                            return value > 1 ? value + ' movies' : value + ' movie';
+                        }
                     },
                 },
                 xaxis: {
-                    categories: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.RunTime)))
+                    categories: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.RunTime ?? 0.0m))),
+                    labels: {
+                        formatter: function(value) {
+                            return value > 1 ? value + ' minutes' : value + ' minute';
+                        }
+                    }
                 }
             });
         histogramChart.render();
 
         var pyramidChart = new ApexCharts(document.querySelector("#pyramid-chart"),
             {
-                series: [{
+                series: [
+                    {
                         name: "@Model.CountryInfo.Name",
                         data:  @Html.Raw(Json.Serialize(@Model.PyramidChartData.Region.Select(d => int.Parse(d.MovieCount))))
                     },
                     {
                         name: "All",
                         data:  @Html.Raw(Json.Serialize(@Model.PyramidChartData.All.Select(d => 0 - int.Parse(d.MovieCount))))
-                    }],
+                    }
+                ],
                 chart: {
                     type: 'bar',
                     stacked: true,
+                    height: '700',
                     zoom: {
                         enabled: true
                     }
@@ -227,10 +252,10 @@
                     enabled: false
                 },
                 stroke: {
+                    show: false,
                     width: 1,
                     colors: ["#fff"]
                 },
-
                 grid: {
                     xaxis: {
                         lines: {
@@ -238,13 +263,6 @@
                         }
                     }
                 },
-                //yaxis: {
-                //    min: -5,
-                //    max: 5,
-                //    title: {
-                //        // text: 'Age',
-                //    },
-                //},
                 tooltip: {
                     shared: false,
                     x: {
@@ -254,7 +272,7 @@
                     },
                     y: {
                         formatter: function (val) {
-                            return abs(val) + " movies";
+                            return Math.abs(val) > 1 ? Math.abs(val) + " movies" : Math.abs(val) + " movie";
                         }
                     }
                 },
@@ -262,14 +280,19 @@
                     text: 'Movie count by Year',
                     align: 'center'
                 },
+                yaxis: {
+                    labels: {
+                        show: false
+                    }
+                },
                 xaxis: {
                     categories: @Html.Raw(Json.Serialize(@Model.PyramidChartData.All.Select(d => d.Year))),
                     title: {
-                        text: 'Year'
+                        text: 'Movie'
                     },
                     labels: {
                         formatter: function (val) {
-                            return val;
+                            return Math.abs(val) > 1 ? Math.abs(val) + " movies" : Math.abs(val) + " movie";
                         }
                     }
                 },
