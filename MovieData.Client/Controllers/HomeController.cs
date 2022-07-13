@@ -20,7 +20,7 @@ namespace MovieData.Client.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Map");
         }
 
         public IActionResult Privacy()

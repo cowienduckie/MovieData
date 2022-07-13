@@ -10,6 +10,6 @@ namespace MovieData.Client.Models
         public LineChartContainer LineChartData { get; set; }
         public List<PieChartData> PieChartData { get; set; }
         public PyramidChartWrapper PyramidChartData { get; set; }
-
+        public HeatChartWrapper HeatChartData { get; set; }
     }
 }

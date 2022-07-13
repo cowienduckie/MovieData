@@ -1,5 +1,4 @@
 
-from datetime import datetime
 import pandas as pd
 from operator import itemgetter
 
@@ -273,4 +272,170 @@ def pyramid_chart(code):
         'all' : total_all,
     }
 
-# print(bar_chart('US'))
+def processHeat(data, code):
+    # monthList = ['T1', 'T2','T3','T4', 'T5', 'T6', 'T7',' T8', 'T9', 'T10', 'T11','T12']
+    minDate = data['min']
+    maxDate = data['max']
+    dictAll = {str(i):[0]*12 for i in range(int(minDate), int(maxDate)+1)}
+    dict1 = {str(i):[0]*12 for i in range(int(minDate), int(maxDate)+1)}
+    list1 = data[code][1:]
+    listAll = data['all'][1:]
+   
+    for i in list1:
+        
+        dict1[i['year'][:4]][int(i['year'][-2:])-1] += int(i['count_movie'])
+    for i in listAll:
+        dictAll[i['year'][:4]][int(i['year'][-2:])-1] += int(i['count_movie'])
+    for i in range(int(minDate), int(maxDate)+1):
+        temp = []
+        tempAll = []
+        for ind,j in enumerate(dict1[str(i)]):
+            j = {
+                'x': 'T'+ str(ind+1),
+                'y': j
+            }
+            temp.append(j)
+        dict1[str(i)] = temp
+        for ind,j in enumerate(dictAll[str(i)]):
+            j = {
+                'x': 'T'+ str(ind+1),
+                'y': j
+            }
+            tempAll.append(j)
+        dictAll[str(i)] = tempAll
+        # dict1[str(i)] = dict(zip(monthList, dict1[str(i)]))
+        # dictAll[str(i)] = dict(zip(monthList, dictAll[str(i)]))
+    return {
+        'min': int(minDate),
+        'max': int(maxDate),
+        'region' :    [{'name' : j, 'data' : dict1[j] } for j in dict1],
+        'all':   [{'name' : j, 'data' : dictAll[j] } for j in dictAll]
+    }
+
+def heat_chart(code):
+    movie_meta = pd.read_csv('movies_metadata.csv', low_memory = False)
+    data = movie_meta['release_date'].fillna('')
+    nation_col = movie_meta['production_countries']
+    lit = []
+
+    for ind, row in enumerate(nation_col):
+
+        if len(data[ind]) >  0:
+            
+            if "/" not in data[ind]:
+                data[ind] = "/".join((data[ind][:7]).split("-"))
+                # print(data[ind])
+            else: 
+                data[ind] = "/".join(data[ind][-7:].split("/")[::-1])
+                
+            # print(data[ind])
+        if code in row:
+            lit.append(ind)
+    # print(data)
+    data_list = data.filter(items=lit, axis=0).values.tolist()
+    final = []
+    final_all = []
+    data_set = set(data_list)
+    for i in data_set:
+        final.append([i, data_list.count(i)])
+    data_all = data.values.tolist()
+    data_all_set = set(data_all)
+    for i in data_all_set:
+        final_all.append([i, data_all.count(i)])
+
+    temp_code = sorted(final, key=itemgetter(0))
+    temp_all = sorted(final_all, key=itemgetter(0))
+    total_code = []
+    total_all = []
+    for j in temp_code:
+        temp = ChartPyramid(j)
+        j = {'year': temp.year, 'count_movie': temp.movieCount,
+        }
+        total_code.append(j)
+    for j in temp_all:
+        temp = ChartPyramid(j)
+        j = {'year': temp.year, 'count_movie': temp.movieCount,
+        }
+        total_all.append(j)
+    return {
+        'min': min(total_code[1]['year'], total_all[1]['year'])[:4],
+        'max': max(total_code[-1]['year'], total_all[-1]['year'])[:4],
+        code : total_code,
+        'all' : total_all[1:],
+    }
+
+def pie_process(nation_code):
+    movie_meta = pd.read_csv('movies_metadata.csv', low_memory = False)
+    result = []
+    code = []
+    
+    df = (movie_meta['genres'])
+    data = movie_meta['release_date'].fillna('')
+    nation_col = movie_meta['production_countries']
+  
+    for ind_row, row in enumerate(df):
+        if nation_code in nation_col[ind_row]:
+            if row != '[]':
+                try:
+                    row_c = (row[1:-1].replace("{","").replace("}","").split(','))
+                except Exception as e:
+                    print(e, row)
+                row_fi = [i.split(":") for i in row_c]
+                for i in range(0, len(row_fi),2):
+                    if  'id' in row_fi[i][0][1:-1]:
+                        row_code = row_fi[i][1].replace(' ', '')
+                        if len(data[ind_row]) > 0:
+                            if "/" not in data[ind_row]:
+                                data[ind_row] = (data[ind_row][:4])
+                            else: data[ind_row] = data[ind_row][-4:]
+                        if row_code+data[ind_row] not in code:
+                            # print(row_code)
+                            code.append(row_code+data[ind_row])
+                            result.append([row_code+data[ind_row], row_fi[i+1][1][2:-1], 1])
+                        else: 
+                            result[code.index(row_code+data[ind_row])][2] += 1
+    total = {
+        '10': 1,
+        '05': 1,
+        'now' : 1
+    }
+    dictAll = {str(i[0][:2]) : {
+        '10': 1,
+        '05': 1,
+        'now' : 1,
+        'name': i[1]
+        
+    } for i in result}
+    checkMaxYear = max([int(i[0][-4:]) for i in result])
+    
+    for i in result:
+        if int(i[0][-4:]) == int(checkMaxYear) - 10:
+            dictAll[str(i[0][:2])]['10'] += 1
+            total['10'] += 1
+        if int(i[0][-4:]) == int(checkMaxYear) - 5:
+            dictAll[str(i[0][:2])]['05'] += 1
+            total['05'] += 1
+        if int(i[0][-4:]) == int(checkMaxYear):
+            dictAll[str(i[0][:2])]['now'] += 1
+            total['now'] += 1
+    for i in dictAll:
+        # print(dictAll[i])
+        dictAll[i]['05'] = int(dictAll[i]['05'])
+        dictAll[i]['10'] = int (dictAll[i]['10'])
+        dictAll[i]['now'] = int (dictAll[i]['now'])
+        dictAll[i]['10'] /= total['10']
+        dictAll[i]['10'] *=  100
+        dictAll[i]['10'] =  round(dictAll[i]['10'], 2)
+        if dictAll[i]['10'] == 100.0:
+            dictAll[i]['10'] = 1.0
+        dictAll[i]['05'] /= total['05']
+        dictAll[i]['05'] *= 100
+        dictAll[i]['05'] =  round(dictAll[i]['05'], 2)
+        if dictAll[i]['05'] == 100.0:
+            dictAll[i]['05'] = 1.0
+        dictAll[i]['now'] /= total['now']
+        dictAll[i]['now'] *= 100
+        dictAll[i]['now'] = round(dictAll[i]['now'], 2)
+        if dictAll[i]['now'] == 100.0:
+            dictAll[i]['now'] = 1.0
+    return { 'data' : [dictAll[j] for j in dictAll]}

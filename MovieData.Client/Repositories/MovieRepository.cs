@@ -15,6 +15,7 @@ namespace MovieData.Client.Repositories
         PieChartWrapper GetPieChart(string countryCode);
         HistogramChartWrapper GetHistogramChart(string countryCode);
         PyramidChartWrapper GetPyramidChart(string countryCode);
+        HeatChartWrapper GetHeatChart(string countryCode);
         DetailModel GetDetailModel(string countryCode);
     }
 
@@ -116,6 +117,22 @@ namespace MovieData.Client.Repositories
             return null;
         }
 
+        public HeatChartWrapper GetHeatChart(string countryCode)
+        {
+            var client = new RestClient($"http://{AppConfig.Host}:{AppConfig.Port}/api/chart/heat/{countryCode}");
+            var request = new RestRequest(Method.GET);
+            var response = client.Execute(request);
+
+            if (response.IsSuccessful)
+            {
+                var content = JsonConvert.DeserializeObject<JToken>(response.Content);
+
+                return content.ToObject<HeatChartWrapper>();
+            }
+
+            return null;
+        }
+
         public DetailModel GetDetailModel(string countryCode)
         {
             return new DetailModel
@@ -125,7 +142,8 @@ namespace MovieData.Client.Repositories
                 HistogramChartData = GetHistogramChart(countryCode).Data,
                 LineChartData = GetLineChart(countryCode).Data,
                 PieChartData = GetPieChart(countryCode).Data,
-                PyramidChartData = GetPyramidChart(countryCode)
+                PyramidChartData = GetPyramidChart(countryCode),
+                HeatChartData = GetHeatChart(countryCode)
             };
         }
     }
