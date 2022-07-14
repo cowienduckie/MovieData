@@ -43,7 +43,7 @@
                     <tr>
                         <th scope="col" style="text-align: center">Category</th>
                         <th scope="col" style="text-align: center">Movie Count</th>
-                        <th scope="col" style="text-align: center">Popularity</th>
+                        <th scope="col" style="text-align: center">Revenue</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -59,7 +59,7 @@
                                 </a> @data.Type
                             </td>
                             <td class="align-middle" align="right">@(data.MovieCount + (data.MovieCount > 1 ? " movies" : " movie"))</td>
-                            <td class="align-middle" align="right">@(data.Popularity)</td>
+                            <td class="align-middle" align="right">@(data.Revenue.ToString("C0", new CultureInfo("en-us")))</td>
                         </tr>
                     }
                     </tbody>
@@ -88,8 +88,8 @@
     <script>
         var colorSet = @Html.Raw(Json.Serialize(colorSet));
         var pieChartSeriesMovieCount = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.MovieCount)));
-        var pieChartSeriesPopularity = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.Popularity)));
-var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.Type)));
+        var pieChartSeriesRevenue = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.Revenue)));
+        var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.Type)));
 
         var pieChart1 = new ApexCharts(document.querySelector("#pie-chart-1"),
             {
@@ -119,10 +119,10 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
         var pieChart2 = new ApexCharts(document.querySelector("#pie-chart-2"),
             {
                 title: {
-                    text: 'Popularity Point by Category',
+                    text: 'Revenue by Category',
                     align: 'center'
                 },
-                series: pieChartSeriesPopularity,
+                series: pieChartSeriesRevenue,
                 chart: {
                     type: 'pie'
                 },
@@ -130,6 +130,13 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
                     width: 1
                 },
                 labels: pieChartLabels,
+                yaxis: {
+                    labels: {
+                        formatter: function(val) {
+                            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'  }).format(val);
+                        }
+                    }
+                },
                 legend: {
                     show: false,
                     position: 'right',
@@ -163,11 +170,6 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
                         name: "@Model.CountryInfo.Name Popularity",
                         type: "line",
                         data: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Popularity)))
-                    },
-                    {
-                        name: "All Popularity",
-                        type: "line",
-                        data: @Html.Raw(Json.Serialize(@Model.LineChartData.All.Select(d => d.Popularity)))
                     }
                 ],
                 chart: {
@@ -183,7 +185,7 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
                 },
                 stroke: {
                     curve: 'smooth',
-                    width: [1, 1, 1]
+                    width: [1, 2]
                 },
                 title: {
                     text: 'Popularity and Movie Count by Length',
@@ -227,7 +229,7 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
                         }
                     },
                     {
-                        seriesName: '@Model.CountryInfo.Name-Popularity',
+                        seriesName: '@Model.CountryInfo.Name Popularity',
                         opposite: true,
                         axisTicks: {
                             show: true,
@@ -343,7 +345,7 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
 
          var heatChart = new ApexCharts(document.querySelector("#heat-chart"),
             {
-                series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Name), data = d.Data}))),
+                series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Year), data = d.Data}))),
                 chart: {
                     height: 800,
                     type: 'heatmap'
@@ -352,10 +354,10 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
                     enabled: false
                 },
 
-                //xaxis: {
-                //    type: 'category',
-                //    categories: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
-                //},
+                xaxis: {
+                    type: 'category',
+                    categories: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
+                },
                 yaxis: {
                     forceNiceScale: true,
                     labels: {
@@ -365,7 +367,7 @@ var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.T
                     }
                 },
                 title: {
-                    text: 'HeatMap Chart (Different color shades for each series)',
+                    text: 'Movies Count by Year and Month',
                     align: 'center'
                 },
                 grid: {

@@ -1,4 +1,6 @@
-﻿namespace MovieData.Client.Models
+﻿using System;
+
+namespace MovieData.Client.Models
 {
     public class PieChartData
     {
@@ -7,5 +9,6 @@
         public int MovieCount { get; set; }
         public decimal Popularity { get; set; }
         public int VoteCount { get; set; }
+        public Int64 Revenue { get; set; }
     }
 }

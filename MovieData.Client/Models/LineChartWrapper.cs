@@ -10,6 +10,5 @@ namespace MovieData.Client.Models
     public class LineChartContainer
     {
         public List<LineChartData> Region;
-        public List<LineChartData> All;
     }
 }

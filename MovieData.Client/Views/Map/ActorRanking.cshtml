@@ -31,7 +31,7 @@
 <hr/>
 <div class="row">
     <div id="movie-ranking" class="col-6">
-        <h5 class="text-center">@Model.CountryInfo.Name Ranking</h5>
+        <h5 class="text-center">Movie Ranking</h5>
         <table class="table table-hover table-bordered table-striped">
             <thead>
             <tr>
@@ -56,5 +56,28 @@
         </table>
     </div>
     <div id="actor-ranking"  class="col-6">
+        <h5 class="text-center">Actor Ranking</h5>
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th scope="col" style="text-align: center">Top</th>
+                <th scope="col" style="text-align: center">Name</th>
+                <th scope="col" style="text-align: center">Point Vote</th>
+                <th scope="col" style="text-align: center">Movies Count</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.RegionData.Count; i++)
+                {
+                    var actor = Model.ActorData[i];
+                    <tr>
+                        <th scope="row" class="align-middle" style="text-align: center">@(i+1)</th>
+                        <td class="align-middle">@actor.Name</td>
+                        <td class="align-middle" align="center">@actor.PointVote</td>
+                        <td class="align-middle" align="center">@actor.MovieCount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
