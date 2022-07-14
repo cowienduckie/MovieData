@@ -32,5 +32,27 @@ namespace MovieData.Client.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        [Route("Map/MovieRanking/{countryCode}")]
+        public IActionResult MovieRanking(string countryCode)
+        {
+            countryCode = countryCode.ToUpper();
+
+            var model = _movieRepo.GetMovieRanking(countryCode);
+
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route("Map/ActorRanking/{countryCode}")]
+        public IActionResult ActorRanking(string countryCode)
+        {
+            countryCode = countryCode.ToUpper();
+
+            var model = _movieRepo.GetActorRanking(countryCode);
+
+            return View(model);
+        }
     }
 }

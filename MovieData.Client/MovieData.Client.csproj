@@ -21,4 +21,12 @@
     <PackageReference Include="RestSharp" Version="106.12.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\lib\apex\dist\apexcharts.amd.js" />
+    <None Include="wwwroot\lib\apex\dist\apexcharts.common.js" />
+    <None Include="wwwroot\lib\apex\dist\apexcharts.esm.js" />
+    <None Include="wwwroot\lib\apex\dist\apexcharts.js" />
+    <None Include="wwwroot\lib\apex\dist\apexcharts.min.js" />
+  </ItemGroup>
+
 </Project>

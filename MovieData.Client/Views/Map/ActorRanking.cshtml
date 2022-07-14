@@ -1,0 +1,60 @@
+﻿@using System.Globalization
+@model ActorRankingModel
+
+@{
+    ViewBag.Title = "Actor Ranking";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-2 text-center">
+        <h5>Total movies</h5>
+        <h2><strong>@Model.CountryInfo.MovieCount</strong></h2>
+    </div>
+    <div class="col-2 text-center">
+        <h5>Total votes</h5>
+        <h2><strong>@Model.CountryInfo.VoteCount</strong></h2>
+    </div>
+    <div class="col-2 text-center">
+        <h5>Vote Average</h5>
+        <h2><strong>@Model.CountryInfo.VoteAvg</strong></h2>
+    </div>
+    <div class="col-2 text-center align-middle">
+        <h5>Country</h5>
+        <h2><strong>@Model.CountryInfo.Name</strong></h2>
+    </div>
+    <div class="col-2 text-center align-middle">
+        <a class="btn btn-block btn-outline-success" asp-action="MovieRanking" asp-route-countryCode="@Model.CountryInfo.Code">Movie Ranking</a>
+        <a class="btn btn-block btn-outline-primary" asp-action="Detail" asp-route-countryCode="@Model.CountryInfo.Code">Back to Detail</a>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div id="movie-ranking" class="col-6">
+        <h5 class="text-center">@Model.CountryInfo.Name Ranking</h5>
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th scope="col" style="text-align: center">Top</th>
+                <th scope="col" style="text-align: center">Name</th>
+                <th scope="col" style="text-align: center">Popularity</th>
+                <th scope="col" style="text-align: center">Budget</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.RegionData.Count; i++)
+                {
+                    var film = Model.RegionData[i];
+                    <tr>
+                        <th scope="row" class="align-middle" style="text-align: center">@(i+1)</th>
+                        <td class="align-middle">@film.Title</td>
+                        <td class="align-middle" align="center">@film.Popularity</td>
+                        <td class="align-middle" align="center">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="actor-ranking"  class="col-6">
+    </div>
+</div>

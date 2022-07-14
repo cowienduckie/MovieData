@@ -17,6 +17,8 @@ namespace MovieData.Client.Repositories
         PyramidChartWrapper GetPyramidChart(string countryCode);
         HeatChartWrapper GetHeatChart(string countryCode);
         DetailModel GetDetailModel(string countryCode);
+        MovieRankingModel GetMovieRanking(string countryCode);
+        ActorRankingModel GetActorRanking(string countryCode);
     }
 
     public class MovieRepository : IMovieRepository
@@ -138,12 +140,32 @@ namespace MovieData.Client.Repositories
             return new DetailModel
             {
                 CountryInfo = GetMap().Data.FirstOrDefault(d => d.Code == countryCode),
-                FilmData = GetFilm(countryCode).Data.Region,
                 HistogramChartData = GetHistogramChart(countryCode).Data,
                 LineChartData = GetLineChart(countryCode).Data,
                 PieChartData = GetPieChart(countryCode).Data,
                 PyramidChartData = GetPyramidChart(countryCode),
                 HeatChartData = GetHeatChart(countryCode)
+            };
+        }
+
+        public MovieRankingModel GetMovieRanking(string countryCode)
+        {
+            var filmData = GetFilm(countryCode).Data;
+
+            return new MovieRankingModel
+            {
+                CountryInfo = GetMap().Data.FirstOrDefault(d => d.Code == countryCode),
+                RegionData = filmData.Region,
+                AllData = filmData.All
+            };
+        }
+
+        public ActorRankingModel GetActorRanking(string countryCode)
+        {
+            return new ActorRankingModel
+            {
+                CountryInfo = GetMap().Data.FirstOrDefault(d => d.Code == countryCode),
+                RegionData = GetFilm(countryCode).Data.Region
             };
         }
     }

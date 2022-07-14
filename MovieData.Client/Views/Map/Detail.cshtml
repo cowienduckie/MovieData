@@ -2,127 +2,94 @@
 @model DetailModel
 
 @{
-    ViewBag.Title = "Map";
+    ViewBag.Title = "Region Detail";
     Layout = "_Layout";
     var colorSet = new[] {"#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"};
 }
 
-<div class="row">
-    <div class="col-3 text-center">
+<div class="row justify-content-center">
+    <div class="col-2 text-center">
         <h5>Total movies</h5>
         <h2><strong>@Model.CountryInfo.MovieCount</strong></h2>
     </div>
-    <div class="col-3 text-center">
+    <div class="col-2 text-center">
         <h5>Total votes</h5>
         <h2><strong>@Model.CountryInfo.VoteCount</strong></h2>
     </div>
-    <div class="col-3 text-center">
+    <div class="col-2 text-center">
         <h5>Vote Average</h5>
         <h2><strong>@Model.CountryInfo.VoteAvg</strong></h2>
     </div>
-    <div class="col-3 text-center align-middle">
+    <div class="col-2 text-center align-middle">
         <h5>Country</h5>
         <h2><strong>@Model.CountryInfo.Name</strong></h2>
+    </div>
+    <div class="col-2 text-center align-middle">
+        <a class="btn btn-block btn-outline-success" asp-action="MovieRanking" asp-route-countryCode="@Model.CountryInfo.Code">Movie Ranking</a>
+        <a class="btn btn-block btn-outline-danger" asp-action="ActorRanking" asp-route-countryCode="@Model.CountryInfo.Code">Actor Ranking</a>
     </div>
 </div>
 <hr/>
 <div class="row">
-    <div class="col-5">
-        <h5 class="text-center">Ranking</h5>
-        <table class="table table-hover table-bordered table-striped">
-            <thead>
-            <tr>
-                <th scope="col" style="text-align: center">Top</th>
-                <th scope="col" style="text-align: center">Name</th>
-                <th scope="col" style="text-align: center">Popularity</th>
-                <th scope="col" style="text-align: center">Budget</th>
-            </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.FilmData.Count; i++)
-                {
-                    var film = Model.FilmData[i];
-                    <tr>
-                        <th scope="row" class="align-middle" style="text-align: center">@(i+1)</th>
-                        <td class="align-middle">@film.Title</td>
-                        <td class="align-middle" align="center">@film.Popularity</td>
-                        <td class="align-middle" align="center">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
     <div class="col-7">
-        <div class="row py-2">
-            <div id="pie-chart-1" class="col-6 p-0"></div>
-            <div class="col-6 p-0">
-                <table class="table table-bordered table-sm">
+        <div class="row pb-2">
+            <div id="pie-charts" class="col-6 p-0">
+                <div id="pie-chart-1"></div>
+                <div id="pie-chart-2"></div>
+            </div>
+            <div id="pie-lengends" class="col-6 p-0">
+                 <table class="table table-bordered table-hover table-sm">
                     <thead>
                     <tr>
                         <th scope="col" style="text-align: center">Category</th>
                         <th scope="col" style="text-align: center">Movie Count</th>
-                        <th scope="col" style="text-align: center">Category</th>
-                        <th scope="col" style="text-align: center">Movie Count</th>
+                        <th scope="col" style="text-align: center">Popularity</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @for (int i = 0; i < Model.PieChartData.Count; i+=2)
+                    @for (int i = 0; i < Model.PieChartData.Count; ++i)
                     {
                         var data = Model.PieChartData[i];
-                        <tr>
-                            <td class="align-middle"
-                                onmouseover="@($"inOpa('{data.Type}')")"
-                                onmouseout="@($"outOpa('{data.Type}')")"
-                                style="cursor: pointer;">
+                        <tr onmouseover="@($"inOpa('{data.Type}')")"
+                            onmouseout="@($"outOpa('{data.Type}')")"
+                            style="cursor: pointer;">
+                            <td class="align-middle">
                                 <a class="dot"
                                    style="background-color: @colorSet[i % colorSet.Length];">
                                 </a> @data.Type
                             </td>
-                            <td class="align-middle" align="center">@(data.MovieCount + (data.MovieCount > 1 ? " movies" : " movie"))</td>
-                            @{
-                                if (i + 1 < Model.PieChartData.Count)
-                                {
-                                    var data2 = Model.PieChartData[i + 1];
-                                    <td class="align-middle"
-                                        onmouseover="@($"inOpa('{data2.Type}')")"
-                                        onmouseout="@($"outOpa('{data2.Type}')")"
-                                        style="cursor: pointer;">
-                                        <a class="dot"
-                                           style="background-color: @colorSet[(i+1) % colorSet.Length];">
-                                        </a> @data2.Type
-                                    </td>
-                                    <td class="align-middle" align="center">@(data2.MovieCount + (data2.MovieCount > 1 ? " movies" : " movie"))</td>
-                                }
-                            }
+                            <td class="align-middle" align="right">@(data.MovieCount + (data.MovieCount > 1 ? " movies" : " movie"))</td>
+                            <td class="align-middle" align="right">@(data.Popularity)</td>
                         </tr>
                     }
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="row py-2">
-            <div class="col-6 p-0">
-                <div id="line-chart"></div>
-                <br/>
-                <br/>
-                <div id="histogram-chart"></div>
+    </div>
+    <div class="col-5">
+        <div id="pyramid-chart"></div>
+        <!-- Extra large modal -->
+        <button type="button" class="btn btn-block btn-outline-primary my-3" data-toggle="modal" data-target=".bd-example-modal-xl">Show Details</button>
+
+        <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div id="heat-chart"></div>
             </div>
-            <div class="col-6 p-0">
-                <div id="pyramid-chart"></div>
-            </div>
+          </div>
         </div>
     </div>
-    <div class="col-12">
-        <div id="heat-chart"></div>
-    </div>
 </div>
+<div id="bar-line-chart"></div>
 
 @section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="~/lib/apex/dist/apexcharts.min.js"></script>
     <script>
         var colorSet = @Html.Raw(Json.Serialize(colorSet));
-        var pieChartSeries = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.MovieCount)));
-        var pieChartLabels = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.Type)));
+        var pieChartSeriesMovieCount = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.MovieCount)));
+        var pieChartSeriesPopularity = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.Popularity)));
+var pieChartLabels = @Html.Raw(Json.Serialize(Model.PieChartData.Select(d => d.Type)));
 
         var pieChart1 = new ApexCharts(document.querySelector("#pie-chart-1"),
             {
@@ -130,10 +97,9 @@
                     text: 'Movies Count by Category',
                     align: 'center'
                 },
-                series: pieChartSeries,
+                series: pieChartSeriesMovieCount,
                 chart: {
-                    type: 'pie',
-                    height: '400'
+                    type: 'pie'
                 },
                 stroke: {
                     width: 1
@@ -150,167 +116,81 @@
             });
         pieChart1.render();
 
+        var pieChart2 = new ApexCharts(document.querySelector("#pie-chart-2"),
+            {
+                title: {
+                    text: 'Popularity Point by Category',
+                    align: 'center'
+                },
+                series: pieChartSeriesPopularity,
+                chart: {
+                    type: 'pie'
+                },
+                stroke: {
+                    width: 1
+                },
+                labels: pieChartLabels,
+                legend: {
+                    show: false,
+                    position: 'right',
+                    formatter: function(seriesName, opts) {
+                        return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]];
+                    }
+                },
+                colors: colorSet
+            });
+        pieChart2.render();
+
         function inOpa(val) {
             pieChart1.toggleSeries(val);
+            pieChart2.toggleSeries(val);
         }
 
         function outOpa(val) {
             pieChart1.toggleSeries(val);
+            pieChart2.toggleSeries(val);
         }
 
-        var heatChart = new ApexCharts(document.querySelector("#heat-chart"),
-            {
-                series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Name), data = d.Data}))),
-                chart: {
-                    height: 800,
-                    type: 'heatmap'
-                },
-                dataLabels: {
-                    enabled: false
-                },
-
-                xaxis: {
-                    type: 'category',
-                    categories: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
-                },
-                yaxis: {
-                    forceNiceScale: true,
-                    tickAmount: 10,
-                    min: parseInt("@(Model.HeatChartData.Min)"),
-                    max: parseInt("@(Model.HeatChartData.Max)")
-                },
-                title: {
-                    text: 'HeatMap Chart (Different color shades for each series)',
-                    align: 'center'
-                },
-                grid: {
-                    padding: {
-                        right: 20
-                    }
-                },
-                plotOptions: {
-                    heatmap: {
-                        colorScale: {
-                            ranges: [
-                                {
-                                    from: -30,
-                                    to: 5,
-                                    color: '#00A100',
-                                    name: 'low'
-                                },
-                                {
-                                    from: 6,
-                                    to: 20,
-                                    color: '#128FD9',
-                                    name: 'medium'
-                                },
-                                {
-                                    from: 21,
-                                    to: 50,
-                                    color: '#FFB200',
-                                    name: 'high'
-                                },
-                                {
-                                    from: 51,
-                                    to: 500,
-                                    color: '#FF0000',
-                                    name: 'much'
-                                }
-                            ]
-                        }
-                    }
-                }
-            });
-        heatChart.render();
-
-        var lineChart = new ApexCharts(document.querySelector("#line-chart"),
+        var barLineChart = new ApexCharts(document.querySelector("#bar-line-chart"),
             {
                 series: [
                     {
-                        name: "@Model.CountryInfo.Name",
+                        name: "@Model.CountryInfo.Name Movie Count",
+                        type: "column",
+                        data: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.MovieCount)))
+                    },
+                    {
+                        name: "@Model.CountryInfo.Name Popularity",
+                        type: "line",
                         data: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Popularity)))
                     },
                     {
-                        name: "All",
+                        name: "All Popularity",
+                        type: "line",
                         data: @Html.Raw(Json.Serialize(@Model.LineChartData.All.Select(d => d.Popularity)))
                     }
                 ],
                 chart: {
                     type: 'line',
+                    height: 600,
+                    stacked: false,
                     zoom: {
                         enabled: true
                     }
                 },
                 dataLabels: {
                     enabled: false
-                },
-                yaxis: {
-                    labels: {
-                        formatter: function(value) {
-                            return value;
-                        }
-                    }
-                },
-                xaxis: {
-                    categories: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime))),
-                    labels: {
-                        formatter: function(value) {
-                            return value > 1 ? value + ' minutes' : value + ' minute';
-                        }
-                    }
                 },
                 stroke: {
                     curve: 'smooth',
-                    width: 1
+                    width: [1, 1, 1]
                 },
                 title: {
-                    text: 'Popularity by Length',
+                    text: 'Popularity and Movie Count by Length',
                     align: 'center'
-                },
-                grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'],
-                        opacity: 0.5
-                    }
-                }
-            });
-        lineChart.render();
-
-        var histogramChart = new ApexCharts(document.querySelector("#histogram-chart"),
-            {
-                series: [
-                    {
-                        name: "@Model.CountryInfo.Name",
-                        data: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.MovieCount)))
-                    }
-                ],
-                chart: {
-                    type: 'bar',
-                    zoom: {
-                        enabled: true
-                    }
-                },
-                plotOptions: {
-                    bar: {
-                        columnWidth: '100%'
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                title: {
-                    text: 'Movies Count by Length',
-                    align: 'center'
-                },
-                yaxis: {
-                    labels: {
-                        formatter: function(value) {
-                            return value > 1 ? value + ' movies' : value + ' movie';
-                        }
-                    }
                 },
                 xaxis: {
-                    categories: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.RunTime ?? 0.0m))),
+                    categories: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime))),
                     labels: {
                         hideOverlappingLabels: true,
                         showDuplicates: false,
@@ -318,9 +198,65 @@
                             return value > 1 ? value + ' minutes' : value + ' minute';
                         }
                     }
+                },
+                yaxis:[
+                    {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#000000'
+                        },
+                        labels: {
+                            style: {
+                                colors: '#000000',
+                            },
+                            formatter: function(value) {
+                                return value > 1 ? value + ' movies' : value + ' movie';
+                            }
+                        },
+                        title: {
+                            text: "Movie Count",
+                            style: {
+                                color: '#000000',
+                            }
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    {
+                        seriesName: '@Model.CountryInfo.Name-Popularity',
+                        opposite: true,
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: '#000000'
+                        },
+                        labels: {
+                        },
+                        title: {
+                            text: "Popularity Point"
+                        },
+                    }
+                ],
+                tooltip: {
+                    fixed: {
+                        enabled: true,
+                        position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+                        offsetY: 30,
+                        offsetX: 60
+                    },
+                },
+                legend: {
+                    horizontalAlign: 'left',
+                    offsetX: 40
                 }
             });
-        histogramChart.render();
+        barLineChart.render();
 
         var pyramidChart = new ApexCharts(document.querySelector("#pyramid-chart"),
             {
@@ -337,7 +273,7 @@
                 chart: {
                     type: 'bar',
                     stacked: true,
-                    height: '700',
+                    height: '100%',
                     zoom: {
                         enabled: true
                     }
@@ -383,15 +319,9 @@
                 },
                 yaxis: {
                     labels: {
-                        show: false,
-                        forceNiceScale: true,
-                        tickAmount: 10,
-                        min: 1800,
-                        max: 2020
-                        //formatter: function (val) {
-                        //    var range = 40;
-                        //    return Math.floor(val / range) * range;
-                        //}
+                        formatter: function (val) {
+                            return (val % 5 == 0) ? val : '';
+                        }
                     }
                 },
                 xaxis: {
@@ -402,6 +332,7 @@
                     labels: {
                         hideOverlappingLabels: true,
                         showDuplicates: false,
+                        tickAmount: 10,
                         formatter: function(val) {
                             return Math.abs(val) > 1 ? Math.abs(val) + " movies" : Math.abs(val) + " movie";
                         }
@@ -409,5 +340,72 @@
                 }
             });
         pyramidChart.render();
+
+         var heatChart = new ApexCharts(document.querySelector("#heat-chart"),
+            {
+                series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Name), data = d.Data}))),
+                chart: {
+                    height: 800,
+                    type: 'heatmap'
+                },
+                dataLabels: {
+                    enabled: false
+                },
+
+                //xaxis: {
+                //    type: 'category',
+                //    categories: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
+                //},
+                yaxis: {
+                    forceNiceScale: true,
+                    labels: {
+                        formatter: function (val) {
+                            return (val % 5 == 0) ? val : '';
+                        }
+                    }
+                },
+                title: {
+                    text: 'HeatMap Chart (Different color shades for each series)',
+                    align: 'center'
+                },
+                grid: {
+                    padding: {
+                        right: 20
+                    }
+                },
+                plotOptions: {
+                    heatmap: {
+                        colorScale: {
+                            ranges: [
+                                {
+                                    from: -30,
+                                    to: 5,
+                                    color: '#00A100',
+                                    name: 'low'
+                                },
+                                {
+                                    from: 6,
+                                    to: 20,
+                                    color: '#128FD9',
+                                    name: 'medium'
+                                },
+                                {
+                                    from: 21,
+                                    to: 50,
+                                    color: '#FFB200',
+                                    name: 'high'
+                                },
+                                {
+                                    from: 51,
+                                    to: 500,
+                                    color: '#FF0000',
+                                    name: 'much'
+                                }
+                            ]
+                        }
+                    }
+                }
+            });
+        heatChart.render();
     </script>
 }

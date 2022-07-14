@@ -1,0 +1,413 @@
+﻿@using System.Globalization
+@model DetailModel
+
+@{
+    ViewBag.Title = "Map";
+    Layout = "_Layout";
+    var colorSet = new[] {"#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"};
+}
+
+<div class="row">
+    <div class="col-3 text-center">
+        <h5>Total movies</h5>
+        <h2><strong>@Model.CountryInfo.MovieCount</strong></h2>
+    </div>
+    <div class="col-3 text-center">
+        <h5>Total votes</h5>
+        <h2><strong>@Model.CountryInfo.VoteCount</strong></h2>
+    </div>
+    <div class="col-3 text-center">
+        <h5>Vote Average</h5>
+        <h2><strong>@Model.CountryInfo.VoteAvg</strong></h2>
+    </div>
+    <div class="col-3 text-center align-middle">
+        <h5>Country</h5>
+        <h2><strong>@Model.CountryInfo.Name</strong></h2>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-5">
+        @*<h5 class="text-center">Ranking</h5>
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+            <tr>
+                <th scope="col" style="text-align: center">Top</th>
+                <th scope="col" style="text-align: center">Name</th>
+                <th scope="col" style="text-align: center">Popularity</th>
+                <th scope="col" style="text-align: center">Budget</th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.RegionData.Count; i++)
+                {
+                    var film = Model.FilmData[i];
+                    <tr>
+                        <th scope="row" class="align-middle" style="text-align: center">@(i+1)</th>
+                        <td class="align-middle">@film.Title</td>
+                        <td class="align-middle" align="center">@film.Popularity</td>
+                        <td class="align-middle" align="center">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@
+    </div>
+    <div class="col-7">
+        <div class="row py-2">
+            <div id="pie-chart-1" class="col-6 p-0"></div>
+            <div class="col-6 p-0">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                    <tr>
+                        <th scope="col" style="text-align: center">Category</th>
+                        <th scope="col" style="text-align: center">Movie Count</th>
+                        <th scope="col" style="text-align: center">Category</th>
+                        <th scope="col" style="text-align: center">Movie Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (int i = 0; i < Model.PieChartData.Count; i+=2)
+                    {
+                        var data = Model.PieChartData[i];
+                        <tr>
+                            <td class="align-middle"
+                                onmouseover="@($"inOpa('{data.Type}')")"
+                                onmouseout="@($"outOpa('{data.Type}')")"
+                                style="cursor: pointer;">
+                                <a class="dot"
+                                   style="background-color: @colorSet[i % colorSet.Length];">
+                                </a> @data.Type
+                            </td>
+                            <td class="align-middle" align="center">@(data.MovieCount + (data.MovieCount > 1 ? " movies" : " movie"))</td>
+                            @{
+                                if (i + 1 < Model.PieChartData.Count)
+                                {
+                                    var data2 = Model.PieChartData[i + 1];
+                                    <td class="align-middle"
+                                        onmouseover="@($"inOpa('{data2.Type}')")"
+                                        onmouseout="@($"outOpa('{data2.Type}')")"
+                                        style="cursor: pointer;">
+                                        <a class="dot"
+                                           style="background-color: @colorSet[(i+1) % colorSet.Length];">
+                                        </a> @data2.Type
+                                    </td>
+                                    <td class="align-middle" align="center">@(data2.MovieCount + (data2.MovieCount > 1 ? " movies" : " movie"))</td>
+                                }
+                            }
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-6 p-0">
+                <div id="line-chart"></div>
+                <br/>
+                <br/>
+                <div id="histogram-chart"></div>
+            </div>
+            <div class="col-6 p-0">
+                <div id="pyramid-chart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div id="heat-chart"></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        var colorSet = @Html.Raw(Json.Serialize(colorSet));
+        var pieChartSeries = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.MovieCount)));
+        var pieChartLabels = @Html.Raw(Json.Serialize(@Model.PieChartData.Select(d => d.Type)));
+
+        var pieChart1 = new ApexCharts(document.querySelector("#pie-chart-1"),
+            {
+                title: {
+                    text: 'Movies Count by Category',
+                    align: 'center'
+                },
+                series: pieChartSeries,
+                chart: {
+                    type: 'pie',
+                    height: '400'
+                },
+                stroke: {
+                    width: 1
+                },
+                labels: pieChartLabels,
+                legend: {
+                    show: false,
+                    position: 'right',
+                    formatter: function(seriesName, opts) {
+                        return [seriesName, " - ", opts.w.globals.series[opts.seriesIndex]];
+                    }
+                },
+                colors: colorSet
+            });
+        pieChart1.render();
+
+        function inOpa(val) {
+            pieChart1.toggleSeries(val);
+        }
+
+        function outOpa(val) {
+            pieChart1.toggleSeries(val);
+        }
+
+        var heatChart = new ApexCharts(document.querySelector("#heat-chart"),
+            {
+                series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Name), data = d.Data}))),
+                chart: {
+                    height: 800,
+                    type: 'heatmap'
+                },
+                dataLabels: {
+                    enabled: false
+                },
+
+                xaxis: {
+                    type: 'category',
+                    categories: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']
+                },
+                yaxis: {
+                    forceNiceScale: true,
+                    tickAmount: 10,
+                    min: parseInt("@(Model.HeatChartData.Min)"),
+                    max: parseInt("@(Model.HeatChartData.Max)")
+                },
+                title: {
+                    text: 'HeatMap Chart (Different color shades for each series)',
+                    align: 'center'
+                },
+                grid: {
+                    padding: {
+                        right: 20
+                    }
+                },
+                plotOptions: {
+                    heatmap: {
+                        colorScale: {
+                            ranges: [
+                                {
+                                    from: -30,
+                                    to: 5,
+                                    color: '#00A100',
+                                    name: 'low'
+                                },
+                                {
+                                    from: 6,
+                                    to: 20,
+                                    color: '#128FD9',
+                                    name: 'medium'
+                                },
+                                {
+                                    from: 21,
+                                    to: 50,
+                                    color: '#FFB200',
+                                    name: 'high'
+                                },
+                                {
+                                    from: 51,
+                                    to: 500,
+                                    color: '#FF0000',
+                                    name: 'much'
+                                }
+                            ]
+                        }
+                    }
+                }
+            });
+        heatChart.render();
+
+        var lineChart = new ApexCharts(document.querySelector("#line-chart"),
+            {
+                series: [
+                    {
+                        name: "@Model.CountryInfo.Name",
+                        data: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Popularity)))
+                    },
+                    {
+                        name: "All",
+                        data: @Html.Raw(Json.Serialize(@Model.LineChartData.All.Select(d => d.Popularity)))
+                    }
+                ],
+                chart: {
+                    type: 'line',
+                    zoom: {
+                        enabled: true
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function(value) {
+                            return value;
+                        }
+                    }
+                },
+                xaxis: {
+                    categories: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime))),
+                    labels: {
+                        formatter: function(value) {
+                            return value > 1 ? value + ' minutes' : value + ' minute';
+                        }
+                    }
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 1
+                },
+                title: {
+                    text: 'Popularity by Length',
+                    align: 'center'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                    }
+                }
+            });
+        lineChart.render();
+
+        var histogramChart = new ApexCharts(document.querySelector("#histogram-chart"),
+            {
+                series: [
+                    {
+                        name: "@Model.CountryInfo.Name",
+                        data: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.MovieCount)))
+                    }
+                ],
+                chart: {
+                    type: 'bar',
+                    zoom: {
+                        enabled: true
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: '100%'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                title: {
+                    text: 'Movies Count by Length',
+                    align: 'center'
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function(value) {
+                            return value > 1 ? value + ' movies' : value + ' movie';
+                        }
+                    }
+                },
+                xaxis: {
+                    categories: @Html.Raw(Json.Serialize(@Model.HistogramChartData.Select(d => d.RunTime ?? 0.0m))),
+                    labels: {
+                        hideOverlappingLabels: true,
+                        showDuplicates: false,
+                        formatter: function(value) {
+                            return value > 1 ? value + ' minutes' : value + ' minute';
+                        }
+                    }
+                }
+            });
+        histogramChart.render();
+
+        var pyramidChart = new ApexCharts(document.querySelector("#pyramid-chart"),
+            {
+                series: [
+                    {
+                        name: "@Model.CountryInfo.Name",
+                        data: @Html.Raw(Json.Serialize(@Model.PyramidChartData.Region.Select(d => int.Parse(d.MovieCount))))
+                    },
+                    {
+                        name: "All",
+                        data: @Html.Raw(Json.Serialize(@Model.PyramidChartData.All.Select(d => 0 - int.Parse(d.MovieCount))))
+                    }
+                ],
+                chart: {
+                    type: 'bar',
+                    stacked: true,
+                    height: '700',
+                    zoom: {
+                        enabled: true
+                    }
+                },
+                colors: ['#008FFB', '#FF4560'],
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        barHeight: '80%'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: false,
+                    width: 1,
+                    colors: ["#fff"]
+                },
+                grid: {
+                    xaxis: {
+                        lines: {
+                            show: false
+                        }
+                    }
+                },
+                tooltip: {
+                    shared: false,
+                    x: {
+                        formatter: function(val) {
+                            return val;
+                        }
+                    },
+                    y: {
+                        formatter: function(val) {
+                            return Math.abs(val) > 1 ? Math.abs(val) + " movies" : Math.abs(val) + " movie";
+                        }
+                    }
+                },
+                title: {
+                    text: 'Movies Count by Year',
+                    align: 'center'
+                },
+                yaxis: {
+                    labels: {
+                        show: false,
+                        forceNiceScale: true,
+                        tickAmount: 10,
+                        min: 1800,
+                        max: 2020
+                        //formatter: function (val) {
+                        //    var range = 40;
+                        //    return Math.floor(val / range) * range;
+                        //}
+                    }
+                },
+                xaxis: {
+                    categories: @Html.Raw(Json.Serialize(@Model.PyramidChartData.All.Select(d => int.Parse(!string.IsNullOrEmpty(d.Year) ? d.Year : "0")))),
+                    title: {
+                        text: 'Movie'
+                    },
+                    labels: {
+                        hideOverlappingLabels: true,
+                        showDuplicates: false,
+                        formatter: function(val) {
+                            return Math.abs(val) > 1 ? Math.abs(val) + " movies" : Math.abs(val) + " movie";
+                        }
+                    }
+                }
+            });
+        pyramidChart.render();
+    </script>
+}
