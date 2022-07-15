@@ -172,8 +172,8 @@ namespace MovieData.Client.Repositories
             return new MovieRankingModel
             {
                 CountryInfo = GetMap().Data.FirstOrDefault(d => d.Code == countryCode),
-                RegionData = filmData.Region,
-                AllData = filmData.All
+                RegionData = filmData.Region.Take(10).ToList(),
+                AllData = filmData.All.Take(10).ToList()
             };
         }
 
@@ -182,7 +182,7 @@ namespace MovieData.Client.Repositories
             return new ActorRankingModel
             {
                 CountryInfo = GetMap().Data.FirstOrDefault(d => d.Code == countryCode),
-                RegionData = GetFilm(countryCode).Data.Region,
+                RegionData = GetFilm(countryCode).Data.Region.Take(10).ToList(),
                 ActorData = GetActor(countryCode).Data
             };
         }

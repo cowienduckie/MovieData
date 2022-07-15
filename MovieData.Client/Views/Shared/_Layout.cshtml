@@ -1,6 +1,7 @@
 ﻿@{
     var controllerName = ViewContext.RouteData.Values["controller"].ToString();
     var actionName = ViewContext.RouteData.Values["action"].ToString();
+    var countryCode = ViewContext.RouteData.Values["countryCode"]?.ToString();
 }
 
 <!DOCTYPE html>
@@ -14,33 +15,41 @@
     <link rel="stylesheet" href="~/lib/apex/dist/apexcharts.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MovieData</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Map" asp-action="Index">Map</a>
-                        </li>
-                    </ul>
+    @if (!string.IsNullOrEmpty(countryCode))
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light text-dark border-bottom box-shadow mb-3 bg-light">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/logo.png" width="150" height="50" class="d-inline-block align-top" alt="">
+                    </a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="Index">Map</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="Detail" asp-route-countryCode="@countryCode">Country Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="MovieRanking" asp-route-countryCode="@countryCode">Movie Ranking</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="ActorRanking" asp-route-countryCode="@countryCode">Actor Ranking</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    @*<div class="@(controllerName == "Map" && actionName == "Index" ? "container-fluid pl-5 pr-5" : "container-fluid")"
-         style="@(controllerName == "Map" && actionName == "Index" ? "" : "padding-left:15vw; padding-right:15vw;")">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>*@
+            </nav>
+        </header>
+    }
 
     <div class="container-fluid px-5">
         <main role="main" class="pb-3 mx-5">
