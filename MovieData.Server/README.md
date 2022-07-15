@@ -15,6 +15,5 @@ Download dataset [here](https://drive.google.com/file/d/1uTFDVIIFOhP5zLxNlLo63ys
 ## Build and Run
 
 ```cmd
-uvicorn main:app --host 0.0.0.0 --port 8000
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
