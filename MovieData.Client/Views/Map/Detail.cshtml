@@ -8,26 +8,26 @@
 }
 
 <div class="row justify-content-center">
-    <div class="col-2 text-center">
+    <div class="col-3 text-center">
         <h5>Total movies</h5>
         <h2><strong>@Model.CountryInfo.MovieCount</strong></h2>
     </div>
-    <div class="col-2 text-center">
+    <div class="col-3 text-center">
         <h5>Total votes</h5>
         <h2><strong>@Model.CountryInfo.VoteCount</strong></h2>
     </div>
-    <div class="col-2 text-center">
+    <div class="col-3 text-center">
         <h5>Vote Average</h5>
         <h2><strong>@Model.CountryInfo.VoteAvg</strong></h2>
     </div>
-    <div class="col-2 text-center align-middle">
+    <div class="col-3 text-center align-middle">
         <h5>Country</h5>
         <h2><strong>@Model.CountryInfo.Name</strong></h2>
     </div>
-    <div class="col-2 text-center align-middle">
+    @*<div class="col-2 text-center align-middle">
         <a class="btn btn-block btn-outline-success" asp-action="MovieRanking" asp-route-countryCode="@Model.CountryInfo.Code">Movie Ranking</a>
         <a class="btn btn-block btn-outline-danger" asp-action="ActorRanking" asp-route-countryCode="@Model.CountryInfo.Code">Actor Ranking</a>
-    </div>
+    </div>*@
 </div>
 <hr/>
 <div class="row">
@@ -56,7 +56,7 @@
                             <td class="align-middle">
                                 <a class="dot"
                                    style="background-color: @colorSet[i % colorSet.Length];">
-                                </a> @data.Type
+                                </a>&nbsp;@data.Type
                             </td>
                             <td class="align-middle" align="right">@(data.MovieCount + (data.MovieCount > 1 ? " movies" : " movie"))</td>
                             <td class="align-middle" align="right">@(data.Revenue.ToString("C0", new CultureInfo("en-us")))</td>
@@ -70,7 +70,7 @@
     <div class="col-5">
         <div id="pyramid-chart"></div>
         <!-- Extra large modal -->
-        <button type="button" class="btn btn-block btn-outline-primary my-3" data-toggle="modal" data-target=".bd-example-modal-xl">Show Details</button>
+        <button type="button" class="btn btn-block btn-outline-primary my-5" data-toggle="modal" data-target=".bd-example-modal-xl">Show Heat map by Year and Month</button>
 
         <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-xl">
@@ -185,7 +185,7 @@
                 },
                 stroke: {
                     curve: 'smooth',
-                    width: [1, 2]
+                    width: [1, 4]
                 },
                 title: {
                     text: 'Popularity and Movie Count by Length',
@@ -225,7 +225,7 @@
                             }
                         },
                         tooltip: {
-                            enabled: true
+                            enabled: false
                         }
                     },
                     {
@@ -245,18 +245,12 @@
                         },
                     }
                 ],
-                tooltip: {
-                    fixed: {
-                        enabled: true,
-                        position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
-                        offsetY: 30,
-                        offsetX: 60
-                    },
-                },
                 legend: {
-                    horizontalAlign: 'left',
+                    horizontalAlign: 'right',
+                    position: 'top',
                     offsetX: 40
-                }
+                },
+                colors: ['#0B83A5','#F6C860']
             });
         barLineChart.render();
 
