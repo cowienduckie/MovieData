@@ -365,3 +365,7 @@ FodyWeavers.xsd
 # Sqlite
 *.db-shm
 *.db-wal
+
+# Local images
+
+images/
