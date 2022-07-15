@@ -177,17 +177,12 @@ def type_pie(nation_code):
                 try:
                     row_c = (row[1:-1].replace("{","").replace("}","").split(','))
                 except Exception as e:
-                    print(e, row)
+                    pass
                 row_fi = [i.split(":") for i in row_c]
-                
                 for i in range(0, len(row_fi),2):
-                    # print((row_fi[i][0]))
                     if  'id' in row_fi[i][0][1:-1]:
                         row_code = row_fi[i][1].replace(' ', '')
-                        # print(row_code, row_fi[i][1], row_fi[i][1][1:-1])
-                        # print(row_fi[i][1])
                         if row_code not in code:
-                            # print(row_code)
                             code.append(row_code)
                             result.append([row_code, row_fi[i+1][1][2:-1], 1, vote_a[ind_row] , vote_c[ind_row], int(revenue[ind_row])])
                         else: 
@@ -215,12 +210,9 @@ def line_chart(code):
     data['popularity'] = movie_meta2['popularity'].round(3).values.tolist()
     nation_col = movie_meta2['production_countries']
     lit = []
-    
     for ind, row in enumerate(nation_col):
-        # data['popularity'][ind] = round(data['popularity'][ind], 3)
         if code in row:
             lit.append(ind)
-    
     total_code = []
    
     temp_code = data.filter(items=lit, axis=0).values.tolist()[::-1]
@@ -289,7 +281,6 @@ def pyramid_chart(code):
             else: data[ind] = data[ind][-4:]
         if code in row:
             lit.append(ind)
-    # print(data)
     data_list = data.filter(items=lit, axis=0).values.tolist()
     final = []
     final_all = []
