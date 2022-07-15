@@ -342,7 +342,7 @@
                 }
             });
         pyramidChart.render();
-
+        // console.log(@Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Year), data = d.Data}))))
          var heatChart = new ApexCharts(document.querySelector("#heat-chart"),
             {
                 series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Year), data = d.Data}))),
@@ -387,18 +387,18 @@
                                 },
                                 {
                                     from: 6,
-                                    to: 20,
+                                    to: 10,
                                     color: '#128FD9',
                                     name: 'medium'
                                 },
                                 {
-                                    from: 21,
-                                    to: 50,
+                                    from: 11,
+                                    to: 30,
                                     color: '#FFB200',
                                     name: 'high'
                                 },
                                 {
-                                    from: 51,
+                                    from: 31,
                                     to: 500,
                                     color: '#FF0000',
                                     name: 'much'

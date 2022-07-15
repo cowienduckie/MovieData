@@ -7,39 +7,45 @@ def processHeat(data, code):
     # monthList = ['T1', 'T2','T3','T4', 'T5', 'T6', 'T7',' T8', 'T9', 'T10', 'T11','T12']
     minDate = data['min']
     maxDate = data['max']
-    dictAll = {str(i):[0]*12 for i in range(int(minDate), int(maxDate)+1)}
+    # dictAll = {str(i):[0]*12 for i in range(int(minDate), int(maxDate)+1)}
     dict1 = {str(i):[0]*12 for i in range(int(minDate), int(maxDate)+1)}
-    list1 = data[code][1:]
-    listAll = data['all'][1:]
-   
+    list1 = data[code]
+    # listAll = data['all'][1:]
+    
     for i in list1:
-        
-        dict1[i['year'][:4]][int(i['year'][-2:])-1] += int(i['count_movie'])
-    for i in listAll:
-        dictAll[i['year'][:4]][int(i['year'][-2:])-1] += int(i['count_movie'])
+        # print(len(i['year']))
+        if len(i['year']) == 7:
+            # print(i['year'][:4])
+            dict1[str(i['year'][:4])][int(i['year'][-2:])-1] += int(i['count_movie'])
+            # print(dict1[str(i['year'][:4])])
+    # print(list1)
+    # for i in listAll:
+    #     dictAll[i['year'][:4]][int(i['year'][-2:])-1] += int(i['count_movie'])
+
     for i in range(int(minDate), int(maxDate)+1):
         temp = []
         tempAll = []
         for ind,j in enumerate(dict1[str(i)]):
             j = {
                 'x': 'T'+ str(ind+1),
-                'y': j
+                'y': int(j)
             }
             temp.append(j)
         dict1[str(i)] = temp
-        for ind,j in enumerate(dictAll[str(i)]):
-            j = {
-                'x': 'T'+ str(ind+1),
-                'y': j
-            }
-            tempAll.append(j)
-        dictAll[str(i)] = tempAll
+        # for ind,j in enumerate(dictAll[str(i)]):
+        #     j = {
+        #         'x': 'T'+ str(ind+1),
+        #         'y': j
+        #     }
+        #     tempAll.append(j)
+        # dictAll[str(i)] = tempAll
         # dict1[str(i)] = dict(zip(monthList, dict1[str(i)]))
         # dictAll[str(i)] = dict(zip(monthList, dictAll[str(i)]))
     return {
         'min': int(minDate),
         'max': int(maxDate),
-        'region' :    [{'year' : j, 'data' : dict1[j] } for j in dict1]
+        'region' :    [{'year' : j, 'data' : dict1[j] } for j in dict1],
+        'check' : data
         # 'all':   [{'year' : j, 'data' : dictAll[j] } for j in dictAll]
     }
 class DataMap:
@@ -284,9 +290,11 @@ def pyramid_chart(code):
     data_list = data.filter(items=lit, axis=0).values.tolist()
     final = []
     final_all = []
+    
     data_set = set(data_list)
     for i in data_set:
         final.append([i, data_list.count(i)])
+    # print(final)
     data_all = data.values.tolist()
     data_all_set = set(data_all)
     for i in data_all_set:
@@ -297,15 +305,18 @@ def pyramid_chart(code):
     total_code = []
     total_all = []
     for j in temp_code:
+        
         temp = ChartPyramid(j)
-        j = {'year': temp.year, 'movieCount': temp.movieCount,
-        }
-        total_code.append(j)
+        if len(str(temp.year)) ==4:
+            j = {'year': temp.year, 'movieCount': temp.movieCount,
+            }
+            total_code.append(j)
     for j in temp_all:
         temp = ChartPyramid(j)
-        j = {'year': temp.year, 'movieCount': temp.movieCount,
-        }
-        total_all.append(j)
+        if len(str(temp.year)) ==4:
+            j = {'year': temp.year, 'movieCount': temp.movieCount,
+            }
+            total_all.append(j)
     return {
         'region' : total_code,
         'all' : total_all,
@@ -332,20 +343,24 @@ def heat_chart(code):
             lit.append(ind)
     # print(data)
     data_list = data.filter(items=lit, axis=0).values.tolist()
+    # print(data_list)
     final = []
     final_all = []
     data_set = set(data_list)
     for i in data_set:
         final.append([i, data_list.count(i)])
     data_all = data.values.tolist()
+    # print(data_all)
     data_all_set = set(data_all)
     for i in data_all_set:
         final_all.append([i, data_all.count(i)])
 
     temp_code = sorted(final, key=itemgetter(0))
     temp_all = sorted(final_all, key=itemgetter(0))
+    # print(temp_code)
     total_code = []
     total_all = []
+    # print(final)
     for j in temp_code:
         temp = ChartPyramid(j)
         j = {'year': temp.year, 'count_movie': temp.movieCount,
@@ -360,9 +375,10 @@ def heat_chart(code):
         'min': min(total_code[1]['year'], total_all[1]['year'])[:4],
         'max': max(total_code[-1]['year'], total_all[-1]['year'])[:4],
         code : total_code,
-        'all' : total_all[1:],
+        # 'all' : total_all[1:],
     }
-
+# print(heat_chart('GB'))
+# print(pyramid_chart('GB'))
 def pie_process(nation_code):
     movie_meta = pd.read_csv('movies_metadata.csv', low_memory = False)
     result = []
