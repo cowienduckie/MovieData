@@ -1,6 +1,8 @@
 
 import pandas as pd
 from operator import itemgetter
+import img
+from os.path import exists
 movie_meta = pd.read_csv('movies_metadata.csv', low_memory = False)
 actor_meta = pd.read_csv('credits.csv', low_memory = False)
 def processHeat(data, code):
@@ -149,6 +151,8 @@ def get_film(code):
     temp_code = data.filter(items=index_row, axis=0).values.tolist()
     for j in temp_code:
         temp = Film(j)
+        if not exists('../MovieData.Client/wwwroot/images/'+str(temp.id)+'.jpg'):
+            img.getImg(str(temp.id))
         j = {'id': temp.id, 'budget': temp.budget, 'title': temp.title, 'overview' :temp.overview, 'popularity': temp.popularity,
         'voteAverage' : temp.vote_tb, 'date': temp.date, 'country': temp.country,
         }
