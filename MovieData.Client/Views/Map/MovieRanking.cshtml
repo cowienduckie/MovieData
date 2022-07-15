@@ -1,7 +1,7 @@
 ﻿@using System.Globalization
 @using System.IO
 @model MovieRankingModel
-@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnv
 
 @{
     ViewBag.Title = "Movie Ranking";
@@ -32,14 +32,13 @@
 </div>
 <hr/>
 <div class="row">
-    <div id="region-ranking" class="col-6 pl-5 pr-4 py-0">
+    <div id="region-ranking" class="col-6 px-5 py-0">
         <h3 class="text-center my-4"><strong>@Model.CountryInfo.Name Ranking</strong></h3>
         <table class="table table-hover">
             <thead>
             <tr>
                 <th scope="col" style="text-align: center"></th>
                 <th scope="col" style="text-align: center">Ranking & Title</th>
-                <th scope="col" style="text-align: center">Publish Date</th>
                 <th scope="col" style="text-align: center">Avg. Vote</th>
                 <th scope="col" style="text-align: center">Popularity</th>
                 <th scope="col" style="text-align: center">Budget</th>
@@ -49,6 +48,7 @@
                 @for (int i = 0; i < Model.RegionData.Count; i++)
                 {
                     var film = Model.RegionData[i];
+                    var publishYear = DateTime.Parse(film.Date);
                     <tr>
                         <td class="align-middle" align="center">
                             @{
@@ -63,8 +63,7 @@
                                 }
                             }
                         </td>
-                        <td class="align-middle"><strong>@(i+1).</strong> @film.Title</td>
-                        <td class="align-middle" align="center">@film.Date</td>
+                        <td class="align-middle"><strong>@(i+1).</strong> @film.Title (@publishYear.Year)</td>
                         <td class="align-middle" align="center"><span class="fa fa-star" style="color: orange;"></span> @film.VoteAverage</td>
                         <td class="align-middle" align="center">@String.Format("{0:0.##}", film.Popularity)</td>
                         <td class="align-middle" align="right">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
@@ -73,14 +72,13 @@
             </tbody>
         </table>
     </div>
-    <div id="all-ranking"  class="col-6 pl-5 pr-4 py-0 border-left">
+    <div id="all-ranking"  class="col-6 px-5 py-0 border-left">
         <h3 class="text-center my-4"><strong>World Ranking</strong></h3>
-        <table class="table table-hover">
+       <table class="table table-hover">
             <thead>
             <tr>
                 <th scope="col" style="text-align: center"></th>
                 <th scope="col" style="text-align: center">Ranking & Title</th>
-                <th scope="col" style="text-align: center">Publish Date</th>
                 <th scope="col" style="text-align: center">Avg. Vote</th>
                 <th scope="col" style="text-align: center">Popularity</th>
                 <th scope="col" style="text-align: center">Budget</th>
@@ -90,6 +88,7 @@
                 @for (int i = 0; i < Model.AllData.Count; i++)
                 {
                     var film = Model.AllData[i];
+                    var publishYear = DateTime.Parse(film.Date);
                     <tr>
                         <td class="align-middle" align="center">
                             @{
@@ -104,8 +103,7 @@
                                 }
                             }
                         </td>
-                        <td class="align-middle"><strong>@(i+1).</strong> @film.Title</td>
-                        <td class="align-middle" align="center">@film.Date</td>
+                        <td class="align-middle"><strong>@(i+1).</strong> @film.Title (@publishYear.Year)</td>
                         <td class="align-middle" align="center"><span class="fa fa-star" style="color: orange;"></span> @film.VoteAverage</td>
                         <td class="align-middle" align="center">@String.Format("{0:0.##}", film.Popularity)</td>
                         <td class="align-middle" align="right">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
