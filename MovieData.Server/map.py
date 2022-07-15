@@ -159,6 +159,8 @@ def get_film(code):
         total_code.append(j)
     for j in temp_all:
         temp = Film(j)
+        if not exists('../MovieData.Client/wwwroot/images/'+str(temp.id)+'.jpg'):
+            img.getImg(str(temp.id))
         j = {'id': temp.id, 'budget': temp.budget, 'title': temp.title, 'overview' :temp.overview, 'popularity': temp.popularity,
         'voteAverage' : temp.vote_tb, 'date': temp.date, 'country': temp.country,
         }
