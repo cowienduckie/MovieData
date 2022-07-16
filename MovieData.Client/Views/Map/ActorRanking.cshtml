@@ -1,6 +1,6 @@
 ﻿@using System.Globalization
 @model ActorRankingModel
-@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnv
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnv
 
 @{
     ViewBag.Title = "Actor Ranking";
@@ -37,7 +37,8 @@
             <thead>
             <tr>
                 <th scope="col" style="text-align: center"></th>
-                <th scope="col" style="text-align: center">Ranking and Title</th>
+                <th scope="col" style="text-align: center">Ranking & Title</th>
+                <th scope="col" style="text-align: center">Avg. Vote</th>
                 <th scope="col" style="text-align: center">Popularity</th>
                 <th scope="col" style="text-align: center">Budget</th>
             </tr>
@@ -46,23 +47,25 @@
                 @for (int i = 0; i < Model.RegionData.Count; i++)
                 {
                     var film = Model.RegionData[i];
+                    var publishYear = DateTime.Parse(film.Date);
                     <tr>
                         <td class="align-middle" align="center">
                             @{
                                 var path = System.IO.Path.Combine(hostingEnv.WebRootPath, "images", $"{film.Id}.jpg");
                                 if (System.IO.File.Exists(path))
                                 {
-                                    <img class="img-fluid" src="~/images/@(film.Id).jpg" width="80" height="120" alt="">
+                                        <img class="img-fluid" src="~/images/@(film.Id).jpg" width="80" height="120" alt="">
                                 }
                                 else
                                 {
-                                    <img class="img-fluid" src="~/noAvailablePoster.png" width="80" height="120" alt="">
+                                        <img class="img-fluid" src="~/noAvailablePoster.png" width="80" height="120" alt="">
                                 }
                             }
                         </td>
-                        <td class="align-middle"><strong>@(i+1).</strong> @film.Title</td>
-                        <td class="align-middle" align="center">@film.Popularity</td>
-                        <td class="align-middle" align="center">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
+                        <td class="align-middle"><strong>@(i+1).</strong> @film.Title (@publishYear.Year)</td>
+                        <td class="align-middle" align="center"><span class="fa fa-star" style="color: orange;"></span> @film.VoteAverage</td>
+                        <td class="align-middle" align="center">@String.Format("{0:0.##}", film.Popularity)</td>
+                        <td class="align-middle" align="right">@film.Budget.ToString("C0", new CultureInfo("en-us"))</td>
                     </tr>
                 }
             </tbody>
