@@ -251,6 +251,14 @@
                         },
                     }
                 ],
+                tooltip: {
+                    shared: true,
+                    x: {
+                        formatter: function(val) {
+                            return val > 1 ? val + ' minutes' : val + 'minute';
+                        }
+                    }
+                },
                 legend: {
                     horizontalAlign: 'right',
                     position: 'top',
