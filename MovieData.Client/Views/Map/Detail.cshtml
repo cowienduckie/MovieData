@@ -2,18 +2,23 @@
 @model DetailModel
 
 @{
-    ViewBag.Title = "Region Detail";
+    ViewBag.Title = "For Movie Studios";
     Layout = "_Layout";
-    var colorSet = new[] {"#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"};
+    var colorSet = new[] {"#f44336", "#e81e63", "#9c27b0", "#673ab7",
+                            "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4",
+                            "#009688", "#4caf50", "#8bc34a", "#cddc39",
+                            "#ffeb3b", "#ffc107", "#ff9800", "#ff5722",
+                            "#795548", "#9e9e9e", "#607d8b", "#000000"}
+;
 }
 
 <div class="row justify-content-center">
     <div class="col-3 text-center">
-        <h5>Total movies</h5>
+        <h5>Total Movies</h5>
         <h2><strong>@Model.CountryInfo.MovieCount</strong></h2>
     </div>
     <div class="col-3 text-center">
-        <h5>Total votes</h5>
+        <h5>Total Votes</h5>
         <h2><strong>@Model.CountryInfo.VoteCount</strong></h2>
     </div>
     <div class="col-3 text-center">
@@ -94,7 +99,7 @@
         var pieChart1 = new ApexCharts(document.querySelector("#pie-chart-1"),
             {
                 title: {
-                    text: 'Movies Count by Category',
+                    text: 'Movie Count by Category',
                     align: 'center'
                 },
                 series: pieChartSeriesMovieCount,
@@ -177,7 +182,8 @@
                     height: 600,
                     stacked: false,
                     zoom: {
-                        enabled: true
+                        enabled: true,
+                        autoScaleYaxis: true,
                     }
                 },
                 dataLabels: {
@@ -196,8 +202,8 @@
                     labels: {
                         hideOverlappingLabels: true,
                         showDuplicates: false,
-                        formatter: function(value) {
-                            return value > 1 ? value + ' minutes' : value + ' minute';
+                        formatter: function (val) {
+                            return (val != null && val > 1 && val % 5 == 0) ? val + ' minutes' : '';
                         }
                     }
                 },
@@ -310,7 +316,7 @@
                     }
                 },
                 title: {
-                    text: 'Movies Count by Year',
+                    text: 'Movie Count by Year',
                     align: 'center'
                 },
                 yaxis: {
@@ -336,7 +342,6 @@
                 }
             });
         pyramidChart.render();
-        // console.log(@Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Year), data = d.Data}))))
          var heatChart = new ApexCharts(document.querySelector("#heat-chart"),
             {
                 series: @Html.Raw(Json.Serialize(@Model.HeatChartData.Region.Select(d => new { name = int.Parse(d.Year), data = d.Data}))),
@@ -361,12 +366,25 @@
                     }
                 },
                 title: {
-                    text: 'Movies Count by Year and Month',
+                    text: 'Movie Count by Year and Month',
                     align: 'center'
                 },
                 grid: {
                     padding: {
                         right: 20
+                    }
+                },
+                tooltip: {
+                    shared: false,
+                    x: {
+                        formatter: function(val) {
+                            return val;
+                        }
+                    },
+                    y: {
+                        formatter: function(val) {
+                            return Math.abs(val) > 1 ? Math.abs(val) + " movies" : Math.abs(val) + " movie";
+                        }
                     }
                 },
                 plotOptions: {
@@ -375,27 +393,27 @@
                             ranges: [
                                 {
                                     from: -30,
+                                    to: 0,
+                                    color: '#9e9e9e',
+                                    name: 'none'
+                                },
+                                {
+                                    from: 1,
                                     to: 5,
                                     color: '#00A100',
                                     name: 'low'
                                 },
                                 {
                                     from: 6,
-                                    to: 10,
-                                    color: '#128FD9',
+                                    to: 15,
+                                    color: '#FFB200',
                                     name: 'medium'
                                 },
                                 {
-                                    from: 11,
-                                    to: 30,
-                                    color: '#FFB200',
-                                    name: 'high'
-                                },
-                                {
-                                    from: 31,
+                                    from: 16,
                                     to: 500,
                                     color: '#FF0000',
-                                    name: 'much'
+                                    name: 'high'
                                 }
                             ]
                         }

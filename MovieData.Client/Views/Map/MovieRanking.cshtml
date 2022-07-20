@@ -4,17 +4,17 @@
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment hostingEnv
 
 @{
-    ViewBag.Title = "Movie Ranking";
+    ViewBag.Title = "For Movie Holics";
     Layout = "_Layout";
 }
 
 <div class="row justify-content-center py-3">
     <div class="col-3 text-center">
-        <h5>Total movies</h5>
+        <h5>Total Movies</h5>
         <h2><strong>@Model.CountryInfo.MovieCount</strong></h2>
     </div>
     <div class="col-3 text-center">
-        <h5>Total votes</h5>
+        <h5>Total Votes</h5>
         <h2><strong>@Model.CountryInfo.VoteCount</strong></h2>
     </div>
     <div class="col-3 text-center">
