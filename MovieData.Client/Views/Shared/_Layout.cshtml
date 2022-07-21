@@ -19,10 +19,10 @@
     @if (!string.IsNullOrEmpty(countryCode))
     {
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light text-dark border-bottom box-shadow mb-3 bg-light">
-                <div class="container">
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light  border-bottom box-shadow mb-3 bg-light">
+                <div class="container p-0">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                        <img src="~/logo.png" width="150" height="50" class="d-inline-block align-top" alt="">
+                        <img src="~/logo.png" width="90" height="30" class="d-inline-block align-top m-0" alt="">
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -31,19 +31,19 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link  font-weight-bold h5 mx-3" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="Index">Map</a>
+                                <a class="nav-link  font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="Index">Map</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="Detail" asp-route-countryCode="@countryCode">For Movie Studios</a>
+                                <a class="nav-link  font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="Detail" asp-route-countryCode="@countryCode">For Movie Studios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="MovieRanking" asp-route-countryCode="@countryCode">For Movie Holics</a>
+                                <a class="nav-link  font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="MovieRanking" asp-route-countryCode="@countryCode">For Movie Holics</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="ActorRanking" asp-route-countryCode="@countryCode">For Third Parties</a>
+                                <a class="nav-link  font-weight-bold h5 mx-3" asp-area="" asp-controller="Map" asp-action="ActorRanking" asp-route-countryCode="@countryCode">For Third Parties</a>
                             </li>
                         </ul>
                     </div>

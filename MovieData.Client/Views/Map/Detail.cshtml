@@ -27,7 +27,7 @@
     </div>
     <div class="col-3 text-center align-middle">
         <h5>Country</h5>
-        <h2><strong>@Model.CountryInfo.Name</strong></h2>
+        <h2><strong>@(Model.CountryInfo.Code == "US" ? "USA" : @Model.CountryInfo.Name)</strong></h2>
     </div>
     @*<div class="col-2 text-center align-middle">
         <a class="btn btn-block btn-outline-success" asp-action="MovieRanking" asp-route-countryCode="@Model.CountryInfo.Code">Movie Ranking</a>
@@ -73,9 +73,9 @@
         </div>
     </div>
     <div class="col-5">
-        <div id="pyramid-chart"></div>
+        <div id="pyramid-chart" class="mb-1"></div>
         <!-- Extra large modal -->
-        <button type="button" class="btn btn-block btn-outline-primary my-5" data-toggle="modal" data-target=".bd-example-modal-xl">Show Heat map by Year and Month</button>
+        <button type="button" class="btn btn-block btn-outline-primary mt-0 mb-5" data-toggle="modal" data-target=".bd-example-modal-xl">Show Heat map by Year and Month</button>
 
         <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-xl">
@@ -163,6 +163,7 @@
             pieChart2.toggleSeries(val);
         }
 
+        var barLineCategory = @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime)));
         var barLineChart = new ApexCharts(document.querySelector("#bar-line-chart"),
             {
                 series: [
@@ -179,7 +180,7 @@
                 ],
                 chart: {
                     type: 'line',
-                    height: 600,
+                    height: 650,
                     stacked: false,
                     zoom: {
                         enabled: true,
@@ -198,12 +199,12 @@
                     align: 'center'
                 },
                 xaxis: {
-                    categories: @Html.Raw(Json.Serialize(@Model.LineChartData.Region.Select(d => d.Runtime))),
+                    categories: barLineCategory,
                     labels: {
                         hideOverlappingLabels: true,
                         showDuplicates: false,
                         formatter: function (val) {
-                            return (val != null && val > 1 && val % 5 == 0) ? val + ' minutes' : '';
+                            return (val != null && val > 1 && val % 5 == 0) ? val + ' min' : '';
                         }
                     }
                 },
@@ -267,6 +268,7 @@
                 colors: ['#0B83A5','#F6C860']
             });
         barLineChart.render();
+        barLineChart.zoomX(80,200);
 
         var pyramidChart = new ApexCharts(document.querySelector("#pyramid-chart"),
             {
@@ -413,12 +415,12 @@
                                 },
                                 {
                                     from: 6,
-                                    to: 15,
+                                    to: 49,
                                     color: '#FFB200',
                                     name: 'medium'
                                 },
                                 {
-                                    from: 16,
+                                    from: 50,
                                     to: 500,
                                     color: '#FF0000',
                                     name: 'high'
